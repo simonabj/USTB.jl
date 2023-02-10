@@ -11,7 +11,7 @@ makedocs(;
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
         canonical="https://Dainou01.github.io/USTB.jl",
-        edit_link="master",
+        edit_link="main",
         assets=String[],
     ),
     pages=[
@@ -21,5 +21,5 @@ makedocs(;
 
 deploydocs(;
     repo="github.com/Dainou01/USTB.jl",
-    devbranch="master",
+    devbranch="main",
 )
