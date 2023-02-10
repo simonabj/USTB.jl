@@ -1,0 +1,13 @@
+name = "USTB"
+uuid = "f407a446-6911-41e8-a487-48c8a67903f1"
+authors = ["Simon Andreas Bjørn"]
+version = "0.1.0"
+
+[compat]
+julia = "1.8"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
