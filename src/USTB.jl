@@ -1,5 +1,7 @@
 module USTB
 
-# Write your package code here.
+export greeting
+
+greeting() = "Hello USTB!"
 
 end
