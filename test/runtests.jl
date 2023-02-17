@@ -5,3 +5,4 @@ using Test
 end
 
 include("test-common.jl")
+include("test-UFF.jl")
