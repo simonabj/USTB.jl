@@ -9,9 +9,15 @@ export WavefrontType
 
 Enumeration for wave types. 
 Exported through USTB.UFF submodule.
-Available options are Plane, Spherical and Photoacustic
+Available options are 
 
-See also [Wave](@ref wave_docs)
+|  Wavefront   | Value |
+|--------------|-------|
+| Plane        |   0   |
+| Spherical    |   1   |
+| Photoacustic |   2   |
+
+See also WAVE
 """
 @enum WavefrontType Plane=0 Spherical=1 Photoacustic=2
 

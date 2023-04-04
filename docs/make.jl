@@ -4,7 +4,7 @@ using Documenter
 DocMeta.setdocmeta!(USTB, :DocTestSetup, :(using USTB); recursive=true)
 
 makedocs(;
-    modules=[USTB],
+    modules=[USTB, USTB.UFF, USTB.UFF.Window, USTB.UFF.Wavefront],
     authors="Simon Andreas Bjørn",
     repo="https://github.com/Dainou01/USTB.jl/blob/{commit}{path}#{line}",
     sitename="USTB.jl",

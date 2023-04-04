@@ -3,11 +3,11 @@
 ## Wavefronts
 
 ```@docs
-WavefrontType
+USTB.UFF.Wavefront.WavefrontType
 ```
 
 ## Windows
 
 ```@docs
-WindowType
+USTB.UFF.Window.WindowType
 ```
