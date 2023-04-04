@@ -2,8 +2,29 @@ export Window
 
 module Window
 
-# Define the default enum for windows
-@enum WindowEnum begin
+export WindowType
+
+"""
+    WindowType
+
+Enumeration for window types. 
+Available options are 
+    None        = 0
+    Boxcar      = 1
+    Flat        = 1
+    Rectangular = 1
+    Hanning     = 2
+    Hamming     = 3
+    Tukey25     = 4
+    Tukey50     = 5
+    Tukey75     = 6
+    Tukey80     = 7
+    Sta         = 7
+    Scanline    = 8
+
+See also PULSE, BEAM, PHANTOM, PROBE
+"""
+@enum WindowType begin
     None=0
     Boxcar
     Hanning
