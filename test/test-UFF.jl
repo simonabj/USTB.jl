@@ -1,6 +1,9 @@
 using USTB, Test, USTB.UFF
 import ContentHashes: hash, SHA
 
+# Include all UFF tests
+# include("uff/...")
+
 @testset "UFF Struct" begin
     # Make some dummy data
     a = Uff()
@@ -23,4 +26,16 @@ import ContentHashes: hash, SHA
     # Save the new hash, and check if it validates again    
     save_hash!(a)
     @test check_hash!(a)
+end
+
+@testset "UFF Window" begin
+    @test Window.None === Window.WindowEnum(0)
+    @test Window.Boxcar === Window.Rectangular === Window.Flat
+    @test Window.Tukey80 === Window.Sta
+    @test Window.Boxcar !== Window.None
+end
+
+@testset "UFF Wavefront" begin
+    @test Wavefront.Plane !== Wavefront.Spherical !== Wavefront.Photoacustic
+    @test Wavefront.Plane === Wavefront.WavefrontEnum(0)
 end

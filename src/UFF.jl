@@ -29,5 +29,7 @@ function check_hash!(a)
     return result
 end
 
+include("uff/Window.jl")
+include("uff/Wavefront.jl")
 
 end
