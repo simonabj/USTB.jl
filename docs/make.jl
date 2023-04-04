@@ -16,6 +16,7 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
+        "Ultrasound File Format" => "uff.md",
     ],
 )
 
