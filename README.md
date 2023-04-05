@@ -14,7 +14,10 @@ An open source MATLAB toolbox for beamforming, processing, and visualization of 
 
 ### How do I get set up? ###
 
-* Just clone the repository and add the folder (without subfolders) to MATLAB's path
+* Add the module to your Julia project the same way you would any other 
+```
+]add https://github.com/Dainou01/USTB.jl
+```
 
 ### Citationware ###
 
