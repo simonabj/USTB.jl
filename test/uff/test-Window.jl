@@ -1,6 +1,6 @@
 using USTB, USTB.UFF, Test
 
-@testset "UFF Window" begin
+@testset "Window" begin
     @test Window.None === Window.WindowType(0)
     @test Window.Boxcar === Window.Rectangular === Window.Flat
     @test Window.Tukey80 === Window.Sta
