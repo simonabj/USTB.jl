@@ -1,6 +1,10 @@
 using USTB, Test, USTB.UFF
 import ContentHashes: hash, SHA
 
+# Include all UFF tests
+include("uff/test-Window.jl")
+include("uff/test-Wavefront.jl")
+
 @testset "UFF Struct" begin
     # Make some dummy data
     a = Uff()

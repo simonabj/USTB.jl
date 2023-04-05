@@ -1,24 +1,80 @@
-import CoordinateTransformations: Spherical, SphericalFromCartesian
-import Unitful: m, rad
-import StaticArrays: SVector
+import CoordinateTransformations: Transformation
 
-export Point, CartesianFromPoint, PointFromCartesian
+export Point
+export PointFromCartesian, CartesianFromPoint
 
-struct Point
-    distance::typeof(1.0*m)
-    azimuth::typeof(1.0*rad)
-    elevation::typeof(1.0*rad)
+"""
+    Point(r, θ, ϕ)
+
+Point contains the position of a point in a tridimensional space. It
+express that location in spherical coordinates which allows to place 
+points at infinity but in a given direction.
+
+The Julia implementation of the UFF Point type is a derivation of the
+CoordinateTransformations.jl `Spherical` type. The UFF Point defines
+the azimuth θ as the angle from the point location to the YZ plane.
+The elevation ϕ is the angle from the point location to the XZ plane.
+"""
+struct Point{T, A}
+    r::T
+    θ::A
+    ϕ::A
+    
+    Point{T, A}(r, θ, ϕ) where {T, A} = new(r, θ, ϕ)
 end
 
-Point(r::Float64, θ::Float64, ϕ::Float64)  = Point(r*m, θ*rad, ϕ*rad)
-Point(r::Number, θ::Number, ϕ::Number) = Point(convert(Float64, r), convert(Float64, θ), convert(Float64, ϕ))
-Point(s::Spherical) = Point(s.r*m, s.θ*rad, s.ϕ*rad)
+function Point(r, θ, ϕ)
+    r2, θ2, ϕ2 = promote(r, θ, ϕ)
+    return Point{typeof(r2), typeof(θ2)}(r2, θ2, ϕ2)
+end
 
-CartesianFromPoint() = 
-    p -> SVector(
-    p.distance * sin(p.azimuth) * cos(p.elevation),
-    p.distance * sin(p.elevation),
-    p.distance * cos(p.azimuth)*cos(p.elevation)
-)
+Base.show(io::IO, x::Point) = print(io, "Point(r=$(x.r), θ=$(x.θ) rad, ϕ=$(x.ϕ) rad)")
+Base.isapprox(p1::Point, p2::Point; kwargs...) = isapprox(p1.r, p2.r; kwargs...) && isapprox(p1.θ, p2.θ; kwargs...) && isapprox(p1.ϕ, p2.ϕ; kwargs...)
 
-PointFromCartesian() = p -> Point((SphericalFromCartesian())(p))
+struct PointFromCartesian <: Transformation; end
+struct CartesianFromPoint <: Transformation; end
+
+Base.show(io::IO, trans::PointFromCartesian) = print(io, "PointFromCartesian()")
+Base.show(io::IO, trans::CartesianFromPoint) = print(io, "CartesianFromPoint()")
+
+"""
+    (::PointFromCartesian)(x::AbstractVector)
+
+Transformation functor to map 3D Cartesian cordinates into UFFs
+`Point` type. The conversion for ``[x, y, z]`` is given by
+
+```math
+\\begin{aligned}
+    r       &= \\sqrt{x^2+y^2+z^2}  \\\\
+    \\theta &= \\text{atan}(x, z)           \\\\
+    \\phi   &= \\text{asin}(y, r)
+\\end{aligned}
+```
+"""
+function (::PointFromCartesian)(x::AbstractVector)
+    length(x) == 3 || error("Spherical transform takes a 3D coordinate")
+
+    d = hypot(x[1], x[2], x[3])
+    Point(d, atan(x[1],x[3]), asin(x[2]/d))
+end
+
+"""
+    (::CartesianFromPoint)(x::Point)
+
+Transformation functor to map UFF `Point` into Cartesian
+coordinates. The conversion for ``[r, \\theta, \\phi]`` is given by
+
+```math
+\\begin{aligned}
+    x &= r\\cdot\\sin(\\theta)\\cdot\\cos(\\phi) \\\\
+    y &= r\\cdot\\sin(\\phi)                     \\\\
+    z &= r\\cdot\\cos(\\theta)\\cdot\\cos(\\phi) 
+\\end{aligned}
+```
+"""
+function (::CartesianFromPoint)(x::Point)
+    sθ, cθ = sincos(x.θ)
+    sϕ, cϕ = sincos(x.ϕ)
+    SVector(x.r * sθ * cϕ, x.r * sϕ, x.r * cθ * cϕ)
+end
+ 

@@ -29,8 +29,9 @@ function check_hash!(a)
     return result
 end
 
-include("uff/Point.jl")
-include("uff/Wavefront.jl")
 include("uff/Window.jl")
+include("uff/Wavefront.jl")
+
+include("uff/Point.jl")
 
 end
