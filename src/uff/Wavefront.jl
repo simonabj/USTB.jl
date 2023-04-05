@@ -18,7 +18,7 @@ Available options are
 | Photoacustic |   2   |
 
 See also WAVE
+# TODO: Cross link WAVE
 """
 @enum WavefrontType Plane=0 Spherical=1 Photoacustic=2
-
 end

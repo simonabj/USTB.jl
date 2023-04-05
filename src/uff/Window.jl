@@ -26,6 +26,10 @@ Available options are
 | Scanline    |   8   |
 
 See also PULSE, BEAM, PHANTOM, PROBE
+# TODO: Link up PULSE
+# TODO: Link up BEAM
+# TODO: Link up PHANTOM
+# TODO: Link up PROBE
 """
 @enum WindowType begin
     None=0

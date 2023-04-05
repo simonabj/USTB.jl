@@ -32,4 +32,6 @@ end
 include("uff/Window.jl")
 include("uff/Wavefront.jl")
 
+include("uff/Point.jl")
+
 end
