@@ -1,4 +1,5 @@
 import CoordinateTransformations: Transformation
+import StaticArrays: SVector
 
 export Point
 export PointFromCartesian, CartesianFromPoint
