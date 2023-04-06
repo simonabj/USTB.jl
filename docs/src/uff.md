@@ -12,6 +12,7 @@ USTB.UFF.CartesianFromPoint
 ```@docs
 USTB.UFF.Probe
 Base.length(p::USTB.UFF.Probe)
+USTB.UFF.dist
 ```
 `Probe` also forwards `Base.size` and `Base.getindex` to `Probe.geometry`,
 meaning `size(p::Probe)` and `getindex(p::Probe,)` work as they do for
@@ -20,6 +21,8 @@ matrices, but operate on `Probe.geometry`.
 Base.size(p::USTB.UFF.Probe, args...; kwargs...)
 Base.getindex(p::USTB.UFF.Probe, args...; kwargs...) 
 Base.getindex(p::USTB.UFF.Probe, s::Symbol)
+Base.setindex!(p::USTB.UFF.Probe, args...; kwargs...) 
+Base.setindex!(p::USTB.UFF.Probe, x::AbstractVector, s::Symbol)
 ```
 
 ## Wavefronts

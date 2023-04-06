@@ -1,6 +1,6 @@
 import LinearAlgebra: norm
 
-export Probe
+export Probe, dist
 
 """
     Probe
@@ -72,3 +72,9 @@ function Base.setindex!(p::Probe, x::AbstractVector, s::Symbol)
     p.geometry[:, _probe_symbol_map[s]] = x
 end
 
+"""
+    dist(p::Probe)
+
+Find the distance from the element centers to the origin.
+"""
+dist(p::Probe) = mapslices(norm, p.geometry[:, 1:3], dims=2)
