@@ -12,6 +12,7 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 [compat]
 ContentHashes = "0.1"
 Lazy = "0.15"
+StaticArrays = "1"
 julia = "1.8"
 
 [extras]
