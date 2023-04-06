@@ -29,6 +29,14 @@ function Point(r, θ, ϕ)
     return Point{typeof(r2), typeof(θ2)}(r2, θ2, ϕ2)
 end
 
+"""
+    Point(x::AbstractVector)
+
+Construct a `Point` from 3D Cartesian coordinates.
+"""
+Point(x::AbstractVector) = PointFromCartesian()(x)
+
+
 Base.show(io::IO, x::Point) = print(io, "Point(r=$(x.r), θ=$(x.θ) rad, ϕ=$(x.ϕ) rad)")
 Base.isapprox(p1::Point, p2::Point; kwargs...) = isapprox(p1.r, p2.r; kwargs...) && isapprox(p1.θ, p2.θ; kwargs...) && isapprox(p1.ϕ, p2.ϕ; kwargs...)
 
@@ -41,7 +49,7 @@ Base.show(io::IO, trans::CartesianFromPoint) = print(io, "CartesianFromPoint()")
 """
     (::PointFromCartesian)(x::AbstractVector)
 
-Transformation functor to map 3D Cartesian cordinates into UFFs
+Transformation functor to map 3D Cartesian coordinates into UFFs
 `Point` type. The conversion for ``[x, y, z]`` is given by
 
 ```math
