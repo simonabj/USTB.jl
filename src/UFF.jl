@@ -1,3 +1,4 @@
+export UFF
 module UFF
 
 import USTB
@@ -33,5 +34,6 @@ include("uff/Window.jl")
 include("uff/Wavefront.jl")
 
 include("uff/Point.jl")
+include("uff/Probe.jl")
 
 end
