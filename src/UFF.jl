@@ -32,8 +32,9 @@ end
 
 include("uff/Window.jl")
 include("uff/Wavefront.jl")
-
 include("uff/Point.jl")
+
 include("uff/Probe.jl")
+include("uff/LinearArray.jl")
 
 end
