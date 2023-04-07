@@ -1,4 +1,5 @@
 import LinearAlgebra: norm
+import Lazy: @switch
 
 export Probe, dist
 
@@ -39,6 +40,7 @@ const _probe_symbol_map = Dict(
     :h => 7, :height => 7,
 )
 
+# TODO: Remove getindex by symbol
 """
     Base.getindex(p::Probe, s::Symbol)
 
@@ -60,6 +62,24 @@ function Base.getindex(p::Probe, s::Symbol)
     p.geometry[:, _probe_symbol_map[s]]
 end
 
+Base.propertynames(::Probe, private::Bool=false) = union(collect(keys(_probe_symbol_map)), [:r], fieldnames(Probe))
+
+function Base.getproperty(p::Probe, s::Symbol)
+    @switch _ begin
+        s ∈ keys(_probe_symbol_map); p.geometry[:, _probe_symbol_map[s]] 
+        s == :r; mapslices(norm, p.geometry[:, 1:3], dims=2)
+        getfield(p, s)
+    end
+end
+
+function Base.setproperty!(p::Probe, s::Symbol, value) 
+    @switch _ begin
+        s ∈ keys(_probe_symbol_map); p.geometry[:, _probe_symbol_map[s]] = value
+        setfield!(p, s, value)
+    end
+end
+
+# TODO: Remove setindex! by symbol
 """
     Base.setindex!(p::Probe, x::AbstractVector, s::Symbol)
 
@@ -71,10 +91,3 @@ for a list of possible labels.
 function Base.setindex!(p::Probe, x::AbstractVector, s::Symbol)
     p.geometry[:, _probe_symbol_map[s]] = x
 end
-
-"""
-    dist(p::Probe)
-
-Find the distance from the element centers to the origin.
-"""
-dist(p::Probe) = mapslices(norm, p.geometry[:, 1:3], dims=2)
