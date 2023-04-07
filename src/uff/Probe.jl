@@ -40,14 +40,16 @@ const _probe_symbol_map = Dict(
     :h => 7, :height => 7,
 )
 
-# TODO: Remove getindex by symbol
-"""
-    Base.getindex(p::Probe, s::Symbol)
+"Implement the property interface for the same variables used by MATLAB"
+Base.propertynames(::Probe, private::Bool=false) = union(collect(keys(_probe_symbol_map)), [:r], fieldnames(Probe))
 
-To allow for indexing by property, similar to MATLABs
-dependent get methods, `getindex` is extended to allow
+"""
+    Base.getproperty(p::Probe, s::Symbol)
+
+Allow indexing by property, similar to MATLABs
+dependent get methods, `getproperty` is extended to allow
 getting the geometries columns by symbols for lookups.
-Available symbols and aliases for lookup are given by
+Available symbols and [aliases] for lookup are given by
 ```
 :x                    = p.geometry[:, 1]  # center of the element in the x axis[m]
 :y                    = p.geometry[:, 2]  # center of the element in the y axis[m]
@@ -57,13 +59,9 @@ Available symbols and aliases for lookup are given by
 :w [:width]           = p.geometry[:, 6]  # element width [m]
 :h [:height]          = p.geometry[:, 7]  # element height [m]
 ```
+
+
 """
-function Base.getindex(p::Probe, s::Symbol)
-    p.geometry[:, _probe_symbol_map[s]]
-end
-
-Base.propertynames(::Probe, private::Bool=false) = union(collect(keys(_probe_symbol_map)), [:r], fieldnames(Probe))
-
 function Base.getproperty(p::Probe, s::Symbol)
     @switch _ begin
         s ∈ keys(_probe_symbol_map); p.geometry[:, _probe_symbol_map[s]] 
@@ -72,22 +70,10 @@ function Base.getproperty(p::Probe, s::Symbol)
     end
 end
 
+"Set property function"
 function Base.setproperty!(p::Probe, s::Symbol, value) 
     @switch _ begin
         s ∈ keys(_probe_symbol_map); p.geometry[:, _probe_symbol_map[s]] = value
         setfield!(p, s, value)
     end
-end
-
-# TODO: Remove setindex! by symbol
-"""
-    Base.setindex!(p::Probe, x::AbstractVector, s::Symbol)
-
-Allows setting geometry columns by label lookup. This is
-similar to the MATLAB implementations use of dependent set
-methods. See the `getindex` method for symbols given above
-for a list of possible labels.
-"""
-function Base.setindex!(p::Probe, x::AbstractVector, s::Symbol)
-    p.geometry[:, _probe_symbol_map[s]] = x
 end
