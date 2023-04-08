@@ -30,11 +30,14 @@ function check_hash!(a)
     return result
 end
 
+# Base types
 include("uff/Window.jl")
 include("uff/Wavefront.jl")
 include("uff/Point.jl")
 
+# Probes
 include("uff/Probe.jl")
 include("uff/LinearArray.jl")
+include("uff/CurvilinearArray.jl")
 
 end

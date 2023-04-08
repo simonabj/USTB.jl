@@ -42,6 +42,11 @@ Base.getindex(p::USTB.UFF.Probe, args...; kwargs...)
 Base.setindex!(p::USTB.UFF.Probe, args...; kwargs...) 
 ```
 
+## Linear Array
+
+```@docs
+```
+
 ---
 ## Wavefronts
 

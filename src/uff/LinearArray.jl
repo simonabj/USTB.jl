@@ -35,7 +35,6 @@ Base.propertynames(a::LinearArray, private::Bool=false) = union(
     propertynames(a.probe), fieldnames(LinearArray)
 )
 
-"Get property function"
 function Base.getproperty(p::LinearArray, s::Symbol)
     @switch _ begin
         s ∈ propertynames(getfield(p, :probe)); getproperty(getfield(p, :probe), s)
@@ -43,8 +42,6 @@ function Base.getproperty(p::LinearArray, s::Symbol)
     end
 end
 
-
-"Set property function"
 function Base.setproperty!(p::LinearArray, s::Symbol, value) 
     @switch _ begin
         s ∈ propertynames(getfield(p, :probe)); setproperty!(getfield(p, :probe), s, value)
