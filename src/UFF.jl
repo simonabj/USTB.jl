@@ -35,6 +35,10 @@ include("uff/Window.jl")
 include("uff/Wavefront.jl")
 include("uff/Point.jl")
 
+# Scan
+include("uff/Scan.jl")
+include("uff/LinearScan.jl")
+
 # Probes
 include("uff/Probe.jl")
 include("uff/LinearArray.jl")

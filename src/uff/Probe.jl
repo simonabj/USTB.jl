@@ -1,7 +1,7 @@
 import LinearAlgebra: norm
 import Lazy: @switch
 
-export Probe, dist
+export Probe
 
 """
     Probe
@@ -57,7 +57,7 @@ Available symbols and [aliases] for lookup are given by
 :ϕ [:alt, :elevation] = p.geometry[:, 5]  # orientation of the element in the elevation direction [rad]
 :w [:width]           = p.geometry[:, 6]  # element width [m]
 :h [:height]          = p.geometry[:, 7]  # element height [m]
-:r                    = norm(p.geometry[:,1:3], dims=2) # Distance from elements to origin [m] 
+:r [:distance]        = norm(p.geometry[:,1:3], dims=2) # Distance from elements to origin [m] 
 ```
 
 
@@ -65,7 +65,7 @@ Available symbols and [aliases] for lookup are given by
 function Base.getproperty(p::Probe, s::Symbol)
     @switch _ begin
         s ∈ keys(_probe_symbol_map); p.geometry[:, _probe_symbol_map[s]] 
-        s == :r; mapslices(norm, p.geometry[:, 1:3], dims=2)
+        s == :r || s == :distance; mapslices(norm, p.geometry[:, 1:3], dims=2)
         getfield(p, s)
     end
 end
