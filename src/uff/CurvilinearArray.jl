@@ -3,7 +3,7 @@ import Lazy: @switch
 
 export CurvilinearArray
 
-@Base.kwdef mutable struct CurvilinearArray
+Base.@kwdef mutable struct CurvilinearArray
     probe::Probe = Probe()
 
     N::Integer = 0
