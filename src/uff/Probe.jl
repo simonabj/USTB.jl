@@ -1,9 +1,11 @@
 import LinearAlgebra: norm
 import Lazy: @switch
-import MakieCore: @recipe, plot!, mesh!, scatter!, lines!, Theme, argument_names
+import MakieCore: @recipe, plot!, lines!, mesh!, scatter!,  Theme
 import ColorSchemes
 
-export Probe
+export Probe, AbstractProbeArray
+
+abstract type AbstractProbeArray end
 
 """
     Probe
@@ -77,6 +79,8 @@ function Base.setproperty!(p::Probe, s::Symbol, value)
         setfield!(p, s, value)
     end
 end
+
+# Makie plot recipe for Probes
 
 @recipe(ProbePlot, probe) do scene
     Theme(

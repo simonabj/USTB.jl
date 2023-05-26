@@ -3,7 +3,7 @@ import Statistics: mean
 
 export LinearArray
 
-Base.@kwdef mutable struct LinearArray
+Base.@kwdef mutable struct LinearArray <: AbstractProbeArray
     probe::Probe = Probe()
     
     N::Integer = 1
