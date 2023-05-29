@@ -47,16 +47,24 @@ Base.setindex!(p::USTB.UFF.Probe, args...; kwargs...)
 ```@docs
 ```
 
+## Curvilinear Array
+```@docs
+USTB.UFF.CurvilinearArray
+```
+
 ---
 ## Wavefronts
 
 ```@docs
-USTB.UFF.Wavefront.WavefrontType
+USTB.UFF.Wavefront
+USTB.UFF.Wavefront.Plane
+USTB.UFF.Wavefront.Spherical
+USTB.UFF.Wavefront.Photoacustic
 ```
 
 ---
 ## Windows
 
 ```@docs
-USTB.UFF.Window.WindowType
+USTB.UFF.Window
 ```
