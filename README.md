@@ -1,4 +1,4 @@
-# UltraSound ToolBox (USTB) #
+# UltraSound ToolBox (USTB)
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://Dainou01.github.io/USTB.jl/stable/)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://Dainou01.github.io/USTB.jl/dev/)
@@ -12,36 +12,36 @@ An open source MATLAB toolbox for beamforming, processing, and visualization of 
 * [Department of Informatics of the University of Oslo](http://www.uio.no/), and
 * [CREATIS Laboratory of the University of Lyon](https://www.creatis.insa-lyon.fr/site7/en).
 
-### How do I get set up? ###
+## How do I get set up?
 
 * Add the module to your Julia project the same way you would any other 
 ```
 ]add https://github.com/Dainou01/USTB.jl
 ```
 
-### Citationware ###
+## Citationware
 
 The USTB is made possible through the contribution of several labs around the world. It contains pieces of intellectual property from many authors, and because of that different references must be cited depending on your use of USTB. There are three kinds of intellectual properties that must be acknowledged: datasets, processes, and the toolbox itself. Please se our website http://www.ustb.no/citation/ for details on how to properly refence the intellectual property. Be sure to reference our proceedings paper from IUS (IEEE International Ultrasonics Symposium) 2017 whenever you are using the toolbox in research or other publications:
 
 * Rodriguez-Molares, A., Rindal, O. M. H., Bernard, O., Nair, A., Bell, M. A. L., Liebgott, H., Austeng, A., LÃ¸vstakken, L. (2017). *The UltraSound ToolBox.* IEEE International Ultrasonics Symposium, IUS, 1â€“4. https://doi.org/10.1109/ULTSYM.2017.8092389
 
-### Current version ###
+### Current version
 
 This is the Julia implementation of the USTB. It is still being implemented, and will have some deviations from the USTB due to language differences. For the current release of the USTB for MATLAB, see:
 
 *  https://bitbucket.org/ustb/ustb/src/master/
 
-### Documentation ###
+### Documentation
 Documentation of the USTB is dependant on the source implementation. 
 > Unfortunately, we have not had the time or resources to write a full documentation of the USTB. However, there are plenty of well documented examples that will help you to get started and hopefully understand the code. You find the examples under the /examples folder. 
 
-### How to contribute? ###
+### How to contribute?
 If you want to contribute, please see the **How to contribute?** section of the source USTB implementation on Bitbucket [here](https://bitbucket.org/ustb/ustb/src/master/README.md).
 
-### Did you find a bug or have suggestions? ###
+### Did you find a bug or have suggestions?
 Please use the issue tracker to report bugs and make suggestions: https://github.com/Dainou01/USTB.jl/issues. All feedback is much appreciated. Don't hesitate to contact us if you have any problems.
 
-### Who do I talk to? ###
+### Who do I talk to?
 
 Me, writing the Julia-implementation of the USTB
 * Simon Andreas Bjørn <s.a.bjorn@ifi.uio.no>
