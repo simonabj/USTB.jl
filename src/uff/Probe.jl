@@ -1,6 +1,6 @@
 import LinearAlgebra: norm
 import Lazy: @switch
-import MakieCore: @recipe, plot!, lines!, mesh!, scatter!,  Theme
+import MakieCore: @recipe, plot!, lines!, mesh!, scatter!, Theme
 import ColorSchemes
 
 export Probe, AbstractProbeArray
@@ -66,16 +66,19 @@ Available symbols and [aliases] for lookup are given by
 """
 function Base.getproperty(p::Probe, s::Symbol)
     @switch _ begin
-        s ∈ keys(_probe_symbol_map); p.geometry[:, _probe_symbol_map[s]] 
-        s == :r || s == :distance; mapslices(norm, p.geometry[:, 1:3], dims=2)
+        s ∈ keys(_probe_symbol_map)
+        p.geometry[:, _probe_symbol_map[s]]
+        s == :r || s == :distance
+        mapslices(norm, p.geometry[:, 1:3], dims=2)
         getfield(p, s)
     end
 end
 
 "Set property function"
-function Base.setproperty!(p::Probe, s::Symbol, value) 
+function Base.setproperty!(p::Probe, s::Symbol, value)
     @switch _ begin
-        s ∈ keys(_probe_symbol_map); p.geometry[:, _probe_symbol_map[s]] = value
+        s ∈ keys(_probe_symbol_map)
+        p.geometry[:, _probe_symbol_map[s]] = value
         setfield!(p, s, value)
     end
 end
@@ -84,7 +87,7 @@ end
 
 @recipe(ProbePlot, probe) do scene
     Theme(
-        cmap = ColorSchemes.viridis
+        cmap=ColorSchemes.viridis
     )
 end
 
@@ -92,43 +95,43 @@ function plot!(probeplot::ProbePlot{Tuple{<:Probe}})
     p = probeplot[:probe][]
     scheme = probeplot[:cmap][]
 
-    colors = collect(get(scheme, range(0.0,1.0, length(p))))
+    colors = collect(get(scheme, range(0.0, 1.0, length(p))))
     colors = vec(repeat(colors', 4, 1))
 
     x = vec([
-        (p.x - p.w ./ 2 .* cos.(p.θ))';
-        (p.x - p.w ./ 2 .* cos.(p.θ))'; 
-        (p.x + p.w ./ 2 .* cos.(p.θ))'; 
+        (p.x - p.w ./ 2 .* cos.(p.θ))'
+        (p.x - p.w ./ 2 .* cos.(p.θ))'
         (p.x + p.w ./ 2 .* cos.(p.θ))'
-    ]);
+        (p.x + p.w ./ 2 .* cos.(p.θ))'
+    ])
 
     y = vec([
-        (p.y - p.h ./ 2 .* cos.(p.ϕ))'; 
-        (p.y + p.h ./ 2 .* cos.(p.ϕ))'; 
-        (p.y - p.h ./ 2 .* cos.(p.ϕ))'; 
+        (p.y - p.h ./ 2 .* cos.(p.ϕ))'
         (p.y + p.h ./ 2 .* cos.(p.ϕ))'
-    ]);
+        (p.y - p.h ./ 2 .* cos.(p.ϕ))'
+        (p.y + p.h ./ 2 .* cos.(p.ϕ))'
+    ])
 
     z = vec([
-        (p.z + p.w./2.0.*sin.(p.θ) + p.h./2.0.*sin.(p.ϕ))';
-        (p.z + p.w./2.0.*sin.(p.θ) - p.h./2.0.*sin.(p.ϕ))';
-        (p.z - p.w./2.0.*sin.(p.θ) + p.h./2.0.*sin.(p.ϕ))';
-        (p.z - p.w./2.0.*sin.(p.θ) - p.h./2.0.*sin.(p.ϕ))';
-    ]);
+        (p.z + p.w ./ 2.0 .* sin.(p.θ) + p.h ./ 2.0 .* sin.(p.ϕ))'
+        (p.z + p.w ./ 2.0 .* sin.(p.θ) - p.h ./ 2.0 .* sin.(p.ϕ))'
+        (p.z - p.w ./ 2.0 .* sin.(p.θ) + p.h ./ 2.0 .* sin.(p.ϕ))'
+        (p.z - p.w ./ 2.0 .* sin.(p.θ) - p.h ./ 2.0 .* sin.(p.ϕ))'
+    ])
 
-    vertices = [ x.*1e3 y.*1e3 -z.*1e3 ];
-        
-    faces = reduce(vcat,[
-        [(i:1:i+2)' 
-        (i+3:-1:i+1)']
+    vertices = [x .* 1e3 y .* 1e3 -z .* 1e3]
+
+    faces = reduce(vcat, [
+        [(i:1:i+2)'
+            (i+3:-1:i+1)']
         for i = 1:4:length(p)*4
-    ]);
+    ])
 
     mesh!(probeplot, vertices, faces, color=colors, shading=false, transparency=false)
-    scatter!(probeplot, p.x*1e3, p.y*1e3, -p.z*1e3, marker=:cross, color=:black, markersize=6, overdraw=true)
+    scatter!(probeplot, p.x * 1e3, p.y * 1e3, -p.z * 1e3, marker=:cross, color=:black, markersize=6, overdraw=true)
 
-    for i=1:4:length(p)*4
-        lines!(probeplot,vertices[[i,i+1,i+3,i+2],:], color=:black, linewidth=1, overdraw=true)
+    for i = 1:4:length(p)*4
+        lines!(probeplot, vertices[[i, i + 1, i + 3, i + 2], :], color=:black, linewidth=1, overdraw=true)
     end
 
     return probeplot
