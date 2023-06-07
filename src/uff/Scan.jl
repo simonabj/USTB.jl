@@ -1,6 +1,4 @@
 import Lazy: @switch
-import MakieCore: @recipe, plot!, lines!, mesh!, scatter!, Theme, convert_arguments
-
 export Scan, AbstractScan
 
 """
@@ -54,18 +52,4 @@ function Base.setproperty!(sca::Scan, s::Symbol, value)
     end
 end
 
-@recipe(ScanPlot, scan) do scene
-    Theme(
-        markersize = 0.7
-    )
-end
-
-function plot!(scanplot::ScanPlot{Tuple{<:Scan}})
-    # Get scan observable
-    sca = scanplot[:scan][];
-
-    scatter!(scanplot, sca.xyz.*1e3, markersize=scanplot[:markersize][])
-
-    return scanplot
-end
 
