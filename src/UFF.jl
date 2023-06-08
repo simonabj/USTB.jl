@@ -9,12 +9,12 @@ export Uff, save_hash!, check_hash!
 version = v"1.2.0"
 
 Base.@kwdef mutable struct Uff
-    name::String            = ""
-    reference::String       = ""
-    author::Vector{String}  = []
-    info::String            = ""
+    name::String = ""
+    reference::String = ""
+    author::Vector{String} = []
+    info::String = ""
 
-    last_hash::Base.SHA1    = hash("")
+    last_hash::Base.SHA1 = hash("")
 end
 
 function save_hash!(a)
@@ -38,6 +38,7 @@ include("uff/Point.jl")
 # Scan
 include("uff/Scan.jl")
 include("uff/LinearScan.jl")
+include("uff/SectorScan.jl")
 
 # Probes
 include("uff/Probe.jl")
