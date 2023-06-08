@@ -1,5 +1,4 @@
 import LinearAlgebra: norm
-import Lazy: @switch
 import ColorSchemes
 
 export Probe, AbstractProbeArray
@@ -24,13 +23,13 @@ end
 Base.length(p::Probe) = size(p.geometry, 1)
 
 "Forwarded `Base.size` to `Probe.geometry`"
-Base.size(p::USTB.UFF.Probe, args...; kwargs...) = Base.size(p.geometry, args...; kwargs...)
+Base.size(p::USTB.UFF.Probe, args...; kwargs...) = size(p.geometry, args...; kwargs...)
 
 "Forwarded `Base.getindex` to `Probe.geometry`"
-Base.getindex(p::USTB.UFF.Probe, args...; kwargs...) = Base.getindex(p.geometry, args...; kwargs...)
+Base.getindex(p::USTB.UFF.Probe, args...; kwargs...) = getindex(p.geometry, args...; kwargs...)
 
 "Forwarded `Base.setindex!` to `Probe.geometry`"
-Base.setindex!(p::USTB.UFF.Probe, args...; kwargs...) = Base.setindex!(p.geometry, args...; kwargs...)
+Base.setindex!(p::USTB.UFF.Probe, args...; kwargs...) = setindex!(p.geometry, args...; kwargs...)
 
 const _probe_symbol_map = Dict(
     :x => 1,
@@ -64,20 +63,20 @@ Available symbols and [aliases] for lookup are given by
 ```
 """
 function Base.getproperty(p::Probe, s::Symbol)
-    @switch _ begin
-        s ∈ keys(_probe_symbol_map)
+    if s ∈ keys(_probe_symbol_map)
         p.geometry[:, _probe_symbol_map[s]]
-        s == :r || s == :distance
+    elseif s == :r || s == :distance
         mapslices(norm, p.geometry[:, 1:3], dims=2)
+    else
         getfield(p, s)
     end
 end
 
 "Set property function"
 function Base.setproperty!(p::Probe, s::Symbol, value)
-    @switch _ begin
-        s ∈ keys(_probe_symbol_map)
+    if s ∈ keys(_probe_symbol_map)
         p.geometry[:, _probe_symbol_map[s]] = value
-        setfield!(p, s, value)
+    else
+        setfield!(p, s, convert(fieldtype(LinearScan, s), value))
     end
 end

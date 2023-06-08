@@ -1,17 +1,22 @@
 import Statistics: mean
-import Lazy: @switch
+import DocStringExtensions: TYPEDEF, TYPEDFIELDS
 
 export CurvilinearArray
 
 """
-  CurvilinearArray
+$(TYPEDEF)
 
 Composite type to define a curvilinear array probe geometry
 CurvilinearArray defines an array of regularly space elements on an 
 arc in the azimuth dimensions.  Optionally it can hold each element 
 width and height, assuming the elements are rectangular. 
 
-Example:
+**Fields**
+---
+$(TYPEDFIELDS)
+
+**Example**
+---
 ```
 prb = CurvilinearArray()
 prb.N = 128;
@@ -22,6 +27,7 @@ prb.radius = 70e-3;
 TODO: Link up Probe
 """
 Base.@kwdef mutable struct CurvilinearArray <: AbstractProbeArray
+    "Wrapped probe"
     probe::Probe = Probe()
 
     "Number of elements in array"
@@ -37,10 +43,17 @@ Base.@kwdef mutable struct CurvilinearArray <: AbstractProbeArray
     element_height::Float64 = 0.0
 end
 
-@forward CurvilinearArray.probe (
-    Base.length, Base.size,
-    Base.getindex, Base.setindex!,
-)
+"Return the number of elements in the Probe"
+Base.length(p::CurvilinearArray) = size(p.probe.geometry, 1)
+
+"Forwarded `Base.size` to `Probe.geometry`"
+Base.size(p::CurvilinearArray, args...; kwargs...) = size(p.probe.geometry, args...; kwargs...)
+
+"Forwarded `Base.getindex` to `Probe.geometry`"
+Base.getindex(p::CurvilinearArray, args...; kwargs...) = getindex(p.probe.geometry, args...; kwargs...)
+
+"Forwarded `Base.setindex!` to `Probe.geometry`"
+Base.setindex!(p::CurvilinearArray, args...; kwargs...) = setindex!(p.probe.geometry, args...; kwargs...)
 
 function update!(p::CurvilinearArray)
     setfield!(p, :element_width, p.pitch)
@@ -58,25 +71,23 @@ function update!(p::CurvilinearArray)
 end
 
 # Implement instance properties and delegate backwards
-Base.propertynames(a::CurvilinearArray, private::Bool=false) = union(
+Base.propertynames(a::CurvilinearArray) = union(
     propertynames(a.probe), fieldnames(CurvilinearArray)
 )
 
 function Base.getproperty(p::CurvilinearArray, s::Symbol)
-    @switch _ begin
-        s ∈ propertynames(getfield(p, :probe))
+    if s ∈ propertynames(getfield(p, :probe))
         getproperty(getfield(p, :probe), s)
+    else
         getfield(p, s)
     end
 end
 
 function Base.setproperty!(p::CurvilinearArray, s::Symbol, value)
-    @switch _ begin
-        s ∈ propertynames(getfield(p, :probe))
+    if s ∈ propertynames(getfield(p, :probe))
         setproperty!(getfield(p, :probe), s, value)
-        begin
-            setfield!(p, s, value)
-            update!(p)
-        end
+    else
+        setfield!(p, s, value)
+        update!(p)
     end
 end

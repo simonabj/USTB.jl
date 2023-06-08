@@ -4,9 +4,9 @@ import ColorSchemes
 
 function GLMakie.plot!(scanplot::ScanPlot{Tuple{<:Scan}})
     # Get scan observable
-    sca = scanplot[:scan][];
+    sca = scanplot[:scan][]
 
-    scatter!(scanplot, sca.xyz.*1e3, markersize=scanplot[:markersize][])
+    scatter!(scanplot, sca.xyz .* 1e3, markersize=scanplot[:markersize][])
 
     return scanplot
 end

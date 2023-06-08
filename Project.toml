@@ -7,28 +7,27 @@ version = "0.1.0"
 ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 ContentHashes = "ac509c8a-358f-4e3e-a88a-d19fed7814aa"
 CoordinateTransformations = "150eb455-5306-5404-9cee-2592286d6298"
+DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 EnumX = "4e289a0a-7415-4d19-859d-a7e5c4648b56"
-Lazy = "50d2b5c4-7a5e-59d5-8109-a42b560f39c0"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
-
-[compat]
-ContentHashes = "0.1"
-CoordinateTransformations = "0.6"
-Lazy = "0.15"
-StaticArrays = "1"
-julia = "1.9"
-GLMakie = "0.8.5"
-
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[targets]
-test = ["Test"]
 
 [weakdeps]
 GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
 
 [extensions]
 USTBMakieExt = ["GLMakie"]
+
+[compat]
+ContentHashes = "0.1"
+CoordinateTransformations = "0.6"
+GLMakie = "0.8.5"
+StaticArrays = "1"
+julia = "1.9"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
