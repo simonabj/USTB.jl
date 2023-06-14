@@ -23,11 +23,11 @@ Base.@kwdef mutable struct SectorScan <: AbstractScan
     """Wrapped scan type"""
     scan::Scan = Scan()
     """Vector containing the distance coordinates [m]"""
-    depth_axis::Vector{Float64} = [0]
+    depth_axis::Vector{Float64} = []
     """Vector containing the azimuth coordinates [rad]"""
-    azimuth_axis::Vector{Float64} = [0]
+    azimuth_axis::Vector{Float64} = []
     """Origin of sector scan"""
-    origin::Point = Point()
+    origin::Point = Point(0, 0, 0)
 end
 
 Base.propertynames(::SectorScan, private::Bool=false) = union(
@@ -40,6 +40,10 @@ function Base.getproperty(sca::SectorScan, s::Symbol)
     s ∈ fieldnames(SectorScan) ? getfield(sca, s) :
     s ∈ propertynames(sca.scan) ? getproperty(sca.scan, s) :
     s == :reference_distance ? getfield(sca.scan, :z) :
+    s == :N_azimuth_axis ? length(sca.azimuth_axis) :
+    s == :N_depth_axis ? length(sca.depth_axis) :
+    # s == :N_origins ? length(sca.origin) :
+    s == :depth_step ? mean(diff(sca.depth_axis)) :
     error("No property :$s in SectorScan")
 end
 
@@ -57,7 +61,23 @@ function Base.setproperty!(sca::SectorScan, s::Symbol, value)
 end
 
 function update_pixel_position!(sca::SectorScan)
-    # Define pixel mesh
-end
+    if isempty(sca.azimuth_axis) || isempty(sca.depth_axis)
+        return
+    end
 
+    # Define pixel grid
+    grid = [[ρ, θ] for ρ = sca.depth_axis, θ = sca.azimuth_axis]
+    ρ, θ = first.(grid), last.(grid)
+
+    N_pixels = reduce(*, size(grid))
+
+    # Define origins
+    x0, y0, z0 = CartesianFromPoint()(sca.origin)
+    println(x0)
+
+    # Position of pixels 
+    sca.scan.x = (ρ.*sin.(θ).+x0)[:]
+    sca.scan.y = (zeros(N_pixels).+y0)[:]
+    sca.scan.z = (ρ.*cos.(θ).+z0)[:]
+end
 
