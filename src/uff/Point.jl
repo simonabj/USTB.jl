@@ -16,24 +16,32 @@ CoordinateTransformations.jl `Spherical` type. The UFF Point defines
 the azimuth θ as the angle from the point location to the YZ plane.
 The elevation ϕ is the angle from the point location to the XZ plane.
 """
-struct Point{T, A}
+struct Point{T,A}
     r::T
     θ::A
     ϕ::A
-    
-    Point{T, A}(r, θ, ϕ) where {T, A} = new(r, θ, ϕ)
+
+    Point{T,A}(r, θ, ϕ) where {T,A} = new(r, θ, ϕ)
 end
 
 function Point(r, θ, ϕ)
     r2, θ2, ϕ2 = promote(r, θ, ϕ)
-    return Point{typeof(r2), typeof(θ2)}(r2, θ2, ϕ2)
+    return Point{typeof(r2),typeof(θ2)}(r2, θ2, ϕ2)
 end
+
+"""
+    Point(x::AbstractVector)
+
+Construct a `Point` from 3D Cartesian coordinates.
+"""
+Point(x::AbstractVector) = PointFromCartesian()(x)
+
 
 Base.show(io::IO, x::Point) = print(io, "Point(r=$(x.r), θ=$(x.θ) rad, ϕ=$(x.ϕ) rad)")
 Base.isapprox(p1::Point, p2::Point; kwargs...) = isapprox(p1.r, p2.r; kwargs...) && isapprox(p1.θ, p2.θ; kwargs...) && isapprox(p1.ϕ, p2.ϕ; kwargs...)
 
-struct PointFromCartesian <: Transformation; end
-struct CartesianFromPoint <: Transformation; end
+struct PointFromCartesian <: Transformation end
+struct CartesianFromPoint <: Transformation end
 
 Base.show(io::IO, trans::PointFromCartesian) = print(io, "PointFromCartesian()")
 Base.show(io::IO, trans::CartesianFromPoint) = print(io, "CartesianFromPoint()")
@@ -41,7 +49,7 @@ Base.show(io::IO, trans::CartesianFromPoint) = print(io, "CartesianFromPoint()")
 """
     (::PointFromCartesian)(x::AbstractVector)
 
-Transformation functor to map 3D Cartesian cordinates into UFFs
+Transformation functor to map 3D Cartesian coordinates into UFFs
 `Point` type. The conversion for ``[x, y, z]`` is given by
 
 ```math
@@ -56,7 +64,7 @@ function (::PointFromCartesian)(x::AbstractVector)
     length(x) == 3 || error("Spherical transform takes a 3D coordinate")
 
     d = hypot(x[1], x[2], x[3])
-    Point(d, atan(x[1],x[3]), asin(x[2]/d))
+    Point(d, atan(x[1], x[3]), asin(x[2] / d))
 end
 
 """
@@ -78,4 +86,4 @@ function (::CartesianFromPoint)(x::Point)
     sϕ, cϕ = sincos(x.ϕ)
     SVector(x.r * sθ * cϕ, x.r * sϕ, x.r * cθ * cϕ)
 end
- 
+

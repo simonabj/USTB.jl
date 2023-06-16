@@ -1,14 +1,12 @@
+import EnumX: @enumx
+
 export Window
 
-module Window
-
-export WindowType
-
 """
-    WindowType(x::Integer)
+    Window
 
 Enumeration for window types. 
-Available options are 
+Available options and corresponding values are 
 
 | Window Type | Value |
 |-------------|-------|
@@ -31,8 +29,8 @@ See also PULSE, BEAM, PHANTOM, PROBE
 # TODO: Link up PHANTOM
 # TODO: Link up PROBE
 """
-@enum WindowType begin
-    None=0
+@enumx Window begin
+    None
     Boxcar
     Hanning
     Hamming
@@ -41,11 +39,7 @@ See also PULSE, BEAM, PHANTOM, PROBE
     Tukey75
     Tukey80
     Scanline
-end
-
-# Assign alias to some windows
-const Rectangular = Boxcar
-const Flat = Boxcar
-const Sta = Tukey80
-
+    Rectangular = Boxcar
+    Flat = Boxcar
+    Sta = Tukey80
 end
