@@ -1,3 +1,4 @@
+import DocStringExtensions: TYPEDEF, TYPEDFIELDS
 import LinearAlgebra: norm
 import ColorSchemes
 
@@ -6,13 +7,17 @@ export Probe, AbstractProbeArray
 abstract type AbstractProbeArray end
 
 """
-    Probe
+$(TYPEDEF)
 
 `Probe` contains the position and attitude of all elements of a
 probe.  Optionally PROBE can hold each element width and height,
 assuming the elements were rectangular. Information is stored in a 
 single matrix form called geometry, one row per element containing:
 [x y z azimuth elevation width height]
+
+**Fields**
+---
+$(TYPEDFIELDS)
 """
 Base.@kwdef mutable struct Probe
     origin::Point{Float64,Float64} = Point(0.0, 0.0, 0.0)
@@ -77,6 +82,6 @@ function Base.setproperty!(p::Probe, s::Symbol, value)
     if s ∈ keys(_probe_symbol_map)
         p.geometry[:, _probe_symbol_map[s]] = value
     else
-        setfield!(p, s, convert(fieldtype(LinearScan, s), value))
+        setfield!(p, s, convert(fieldtype(Probe, s), value))
     end
 end

@@ -18,7 +18,7 @@ $(TYPEDFIELDS)
 **Example**
 ---
 ```
-prb = CurvilinearArray()
+prb = LinearArray()
 prb.N = 128;
 prb.pitch = 500e-6;
 prb.radius = 70e-3;
@@ -61,7 +61,7 @@ function update!(p::LinearArray)
     x0 = (1:p.N) .* p.pitch
     x0 = x0 .- mean(x0)
 
-    getfield(p, :probe).geometry = [x0 zeros(p.N, 4) p.element_width * ones(p.N, 1) p.element_height * ones(p.N, 1)]
+    p.probe.geometry = [x0 zeros(p.N, 4) p.element_width * ones(p.N, 1) p.element_height * ones(p.N, 1)]
 end
 
 # Implement instance properties and delegate backwards
