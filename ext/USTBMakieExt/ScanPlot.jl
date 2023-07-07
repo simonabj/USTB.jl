@@ -11,25 +11,29 @@ function GLMakie.plot!(scanplot::ScanPlot{Tuple{<:Scan}})
     return scanplot
 end
 
-function GLMakie.plot(p::Scan; fig=nothing, axis=nothing, subplot=[1, 1], kwargs...)
-    if isnothing(fig)
-        fig = Figure(resolution=(600, 400))
-    end
+function GLMakie.plot(p::Scan; kwargs...)
+    fig = Figure(resolution=(600, 400))
 
-    if isnothing(axis)
-        axis = Axis3(
-            fig[subplot...],
-            ztickformat=(values) -> ["$(-v)" for v ∈ values],
-            aspect=:data,
-            viewmode=:fitzoom,
-            xlabel="x [mm]", ylabel="y [mm]", zlabel="z [mm]",
-            kwargs...
-        )
-    end
+    ax, plt = GLMakie.plot(fig[1, 1], p; kwargs...)
 
-    scanplot!(axis, p)
-
-    return fig
+    return Makie.FigureAxisPlot(fig, ax, plt)
 end;
 
+
+function GLMakie.plot(gpos::Makie.GridPosition, p::Scan; kwargs...)
+    ax = Axis3(
+        gpos,
+        ztickformat=(values) -> ["$(-v)" for v ∈ values],
+        # aspect=:data,
+        viewmode=:fitzoom,
+        xlabel="x [mm]", ylabel="y [mm]", zlabel="z [mm]",
+        kwargs...
+    )
+
+    plt = scanplot!(ax, p)
+
+    return Makie.AxisPlot(ax, plt)
+end
+
 GLMakie.plot(p::AbstractScan; kwargs...) = GLMakie.plot(p.scan; kwargs...);
+GLMakie.plot(gpos::Makie.GridPosition, p::AbstractScan; kwargs...) = GLMakie.plot(gpos, p.scan; kwargs...)
