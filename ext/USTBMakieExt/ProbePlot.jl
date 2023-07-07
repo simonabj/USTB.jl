@@ -50,26 +50,29 @@ function GLMakie.plot!(probeplot::ProbePlot)
     return probeplot
 end
 
-function GLMakie.plot(p::Probe; fig=nothing, axis=nothing, subplot=[1, 1], kwargs...)
+function GLMakie.plot(p::Probe; kwargs...)
 
-    if isnothing(fig)
-        fig = Figure(resolution=(600, 400))
-    end
+    fig = Figure(resolution=(600, 400))
 
-    if isnothing(axis)
-        axis = Axis3(
-            fig[subplot...],
-            ztickformat=(values) -> ["$(-v)" for v ∈ values],
-            aspect=:data,
-            viewmode=:fitzoom,
-            xlabel="x [mm]", ylabel="y [mm]", zlabel="z [mm]",
-            kwargs...
-        )
-    end
+    ax, plt = GLMakie.plot(fig[1, 1], p; kwargs...)
 
-    probeplot!(axis, p)
+    return Makie.FigureAxisPlot(fig, ax, plt)
+end
 
-    return fig
+function GLMakie.plot(gpos::Makie.GridPosition, p::Probe; kwargs...)
+    ax = Axis3(
+        gpos,
+        ztickformat=(values) -> ["$(-v)" for v ∈ values],
+        aspect=:data,
+        viewmode=:fitzoom,
+        xlabel="x [mm]", ylabel="y [mm]", zlabel="z [mm]",
+        kwargs...
+    )
+
+    plt = probeplot!(ax, p)
+
+    return Makie.AxisPlot(ax, plt)
 end
 
 GLMakie.plot(p::AbstractProbeArray; kwargs...) = GLMakie.plot(p.probe; kwargs...)
+GLMakie.plot(gpos::Makie.GridPosition, p::AbstractProbeArray; kwargs...) = GLMakie.plot(gpos, p.probe; kwargs...)
