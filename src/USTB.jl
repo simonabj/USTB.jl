@@ -2,6 +2,6 @@ module USTB
 
 include("common.jl")
 
-include("UFF.jl")
+include("uff/UFF.jl")
 
 end

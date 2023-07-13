@@ -31,18 +31,20 @@ function check_hash!(a)
 end
 
 # Base types
-include("uff/Window.jl")
-include("uff/Wavefront.jl")
-include("uff/Point.jl")
+include("Window.jl")
+include("Wavefront.jl")
+include("Point.jl")
 
 # Scan
-include("uff/Scan.jl")
-include("uff/LinearScan.jl")
-include("uff/SectorScan.jl")
+include("Scan.jl")
+include("LinearScan.jl")
+include("SectorScan.jl")
 
 # Probes
-include("uff/Probe.jl")
-include("uff/LinearArray.jl")
-include("uff/CurvilinearArray.jl")
+include("Probe.jl")
+include("LinearArray.jl")
+include("CurvilinearArray.jl")
+
+include("Pulse.jl")
 
 end
