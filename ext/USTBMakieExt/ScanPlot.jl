@@ -24,8 +24,8 @@ function GLMakie.plot(gpos::Makie.GridPosition, p::Scan; kwargs...)
     ax = Axis3(
         gpos,
         ztickformat=(values) -> ["$(-v)" for v ∈ values],
-        # aspect=:data,
-        viewmode=:fitzoom,
+        aspect=:data,
+        # viewmode=:fitzoom,
         xlabel="x [mm]", ylabel="y [mm]", zlabel="z [mm]",
         kwargs...
     )
