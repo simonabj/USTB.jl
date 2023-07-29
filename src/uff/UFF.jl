@@ -46,5 +46,6 @@ include("LinearArray.jl")
 include("CurvilinearArray.jl")
 
 include("Pulse.jl")
+include("Phantom.jl")
 
 end
