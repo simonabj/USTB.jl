@@ -48,4 +48,6 @@ include("CurvilinearArray.jl")
 include("Pulse.jl")
 include("Phantom.jl")
 
+include("Wave.jl")
+
 end
