@@ -44,7 +44,7 @@ Please use the issue tracker to report bugs and make suggestions: https://github
 ### Who do I talk to?
 
 Me, writing the Julia-implementation of the USTB
-* Simon Andreas Bjørn <s.a.bjorn@ifi.uio.no>
+* Simon Andreas Bjørn <simonabj@ifi.uio.no>
 
 The USTB project administrators are:
 
