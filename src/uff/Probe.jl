@@ -47,7 +47,7 @@ const _probe_symbol_map = Dict(
 )
 
 "Implement the property interface for the same variables used by MATLAB"
-Base.propertynames(::Probe, private::Bool=false) = union(collect(keys(_probe_symbol_map)), [:r], fieldnames(Probe))
+Base.propertynames(::Probe, private::Bool=false) = union(collect(keys(_probe_symbol_map)), [:r, :xyz], fieldnames(Probe))
 
 """
     Base.getproperty(p::Probe, s::Symbol)
@@ -72,6 +72,8 @@ function Base.getproperty(p::Probe, s::Symbol)
         p.geometry[:, _probe_symbol_map[s]]
     elseif s == :r || s == :distance
         mapslices(norm, p.geometry[:, 1:3], dims=2)
+    elseif s == :xyz
+        p.geometry[:, 1:3]
     else
         getfield(p, s)
     end

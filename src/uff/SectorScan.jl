@@ -42,7 +42,7 @@ function Base.getproperty(sca::SectorScan, s::Symbol)
     s == :reference_distance ? getfield(sca.scan, :z) :
     s == :N_azimuth_axis ? length(sca.azimuth_axis) :
     s == :N_depth_axis ? length(sca.depth_axis) :
-    # s == :N_origins ? length(sca.origin) :
+    s == :N_origins ? length(sca.origin) :
     s == :depth_step ? mean(diff(sca.depth_axis)) :
     error("No property :$s in SectorScan")
 end

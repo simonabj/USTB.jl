@@ -64,7 +64,11 @@ function (::PointFromCartesian)(x::AbstractVector)
     length(x) == 3 || error("Spherical transform takes a 3D coordinate")
 
     d = hypot(x[1], x[2], x[3])
-    Point(d, atan(x[1], x[3]), asin(x[2] / d))
+    if d > 0
+        Point(d, atan(x[1], x[3]), asin(x[2] / d))
+    else
+        Point(d, atan(x[1], x[3]), 0)
+    end
 end
 
 """
@@ -87,3 +91,32 @@ function (::CartesianFromPoint)(x::Point)
     SVector(x.r * sθ * cϕ, x.r * sϕ, x.r * cθ * cϕ)
 end
 
+Base.propertynames(::Point, private::Bool=false) = union(fieldnames(Point), [:x,:y,:z,:xyz])
+
+function Base.getproperty(p::Point, s::Symbol)
+    if s in [:x, :y, :z, :xyz]
+        p_xyz = CartesianFromPoint()(p)
+
+        return s == :x ? p_xyz[1] :
+            s == :y ? p_xyz[2] :
+            s == :z ? p_xyz[3] :
+            p_xyz
+    end
+    
+    return getfield(p, s)
+end
+
+function Base.setproperty!(p::Point, s::Symbol, value)
+    if s in [:x, :y, :z]
+        p_xyz = CartesianFromPoint()(p)
+        # Set value to correct index
+        p_xyz[Dict( :x => 1, :y => 2, :z => 3)[s]] = value
+        new_p = PointFromCartesian()(p_xyz)
+        p.r, p.θ, p.ϕ = new_p.r, new_p.θ, new_p.ϕ
+    elseif s == :xyz
+        new_p = PointFromCartesian()(value)
+        p.r, p.θ, p.ϕ = new_p.r, new_p.θ, new_p.ϕ
+    else
+        setfield!(p, s, convert(fieldtype(Point, s), value))
+    end
+end
