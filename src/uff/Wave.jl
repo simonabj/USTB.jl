@@ -39,7 +39,6 @@ function Base.getproperty(wave::Wave, s::Symbol)
     elseif s == :N_elements
         return wave.probe.N_elements
     elseif s == :delay_values
-        # TODO: Fix code. Gives wrong answer
         source_origin_dist = hypot((wave.source.xyz - wave.origin.xyz)...)
         if source_origin_dist < Inf
             dst = mapslices(norm, wave.probe.xyz .- wave.source.xyz', dims=2)
