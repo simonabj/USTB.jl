@@ -1,10 +1,10 @@
 export Wave
 
-Base.@kwdef mutable struct Wave
+Base.@kwdef mutable struct Wave <: AbstractWave
     wavefront::Wavefront.WavefrontType = Wavefront.Spherical
     source::Point = Point([0, 0, 0])
     origin::Point = source
-    apodization::Nothing = nothing # Not implemented yet
+    apodization::Apodization = Apodization() # Not implemented yet
 
     probe::Union{AbstractProbeArray,Nothing} = nothing
     event::Union{Integer,Nothing} = nothing

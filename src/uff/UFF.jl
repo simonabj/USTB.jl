@@ -45,9 +45,13 @@ include("Probe.jl")
 include("LinearArray.jl")
 include("CurvilinearArray.jl")
 
+# Compund Structs
 include("Pulse.jl")
 include("Phantom.jl")
 
+# Complex Structs
+abstract type AbstractWave end 
+include("Apodization.jl")
 include("Wave.jl")
 
 end

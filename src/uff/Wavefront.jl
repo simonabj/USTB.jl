@@ -26,4 +26,5 @@ See also WAVE
     Spherical = 1
     Photoacustic = 2
 end
+
 end

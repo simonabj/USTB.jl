@@ -1,6 +1,7 @@
-import EnumX: @enumx
-
 export Window
+
+module Window
+export WindowType, None, Boxcar, Hanning, Hamming, Tukey25, Tukey50, Tukey75, Tukey80, Scanline, Rectangular, Flat, Sta
 
 """
     Window
@@ -29,17 +30,21 @@ See also PULSE, BEAM, PHANTOM, PROBE
 # TODO: Link up PHANTOM
 # TODO: Link up PROBE
 """
-@enumx Window begin
-    None
-    Boxcar
-    Hanning
-    Hamming
-    Tukey25
-    Tukey50
-    Tukey75
-    Tukey80
-    Scanline
-    Rectangular = Boxcar
-    Flat = Boxcar
-    Sta = Tukey80
+
+@enum WindowType begin
+    None = 0
+    Boxcar = 1
+    Hanning = 2
+    Hamming = 3
+    Tukey25 = 4
+    Tukey50 = 5
+    Tukey75 = 6
+    Tukey80 = 7
+    Scanline = 8
+end
+
+Rectangular = Boxcar
+Flat = Boxcar
+Sta = Tukey80
+
 end
