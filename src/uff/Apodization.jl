@@ -219,5 +219,62 @@ function incidence_aperture(apo::Apodization)
 end
 
 function incidence_wave(apo::Apodization)
-    return 1,2,3
+    tan_theta = zeros((a.focus.N_pixels, length(a.sequence)))
+    tan_phi = zeros((a.focus.N_pixels, length(a.sequence)))
+    distance = zeros((a.focus.N_pixels, length(a.sequence)))
+
+    for n in 1:length(a.sequence)
+        # Plane wave
+        if a.sequence[n].wavefront == UFF.Wavefront.Plane || isinf(a.sequence[n].source.distance)
+            tan_theta[:,n] = ones((a.focus.N_pixels, 1))*tan(a.sequence[n].source.azimuth - a.tilt[1])
+            tan_phi[:, n] = ones((a.focus.N_pixels, 1))*tan(a.sequence[n].source.elevation - a.tile[2])
+            distance[:, n] = a.focus.z
+        
+        # Diverging or converging waves
+        else
+            #Distance to source
+            x_dist = a.focus.x - a.sequence[n].source.x
+            y_dist = a.focus.y - a.sequence[n].source.y
+            z_dist = a.focus.z - a.sequence[n].source.z
+            
+            # Distances
+            if isa(a.focus, UFF.SectorScan)
+                # Source angle respect apex
+                z_source_apex = a.sequence[n].source.z - a.focus.apex.z
+                source_theta = 0
+                source_phi = 0
+                if abs(z_source_apex) > 0
+                    source_theta = atan(a.sequence[n].source.x - a.focus.apex.x, z_source_apex)
+                    source_phi = atan(a.sequence[n].source.y - a.focus.apex.y, z_source_apex)
+                end
+                
+                # Apply beam & tilt
+                x_dist, y_dist, z_dist = USTB.rotate_points(x_dist, y_dist, z_dist, a.tilt[1] + source_theta, a.tilt[2] + source_phi)
+
+                z_dist[z_dist >= 0 & z_dist> a.maximum_aperture[1] / a.f_number[1]] =  a.maximum_aperture[1] / a.f_number[1]
+                z_dist[z_dist < 0  & z_dist<-a.maximum_aperture[1] / a.f_number[1]] = -a.maximum_aperture[1] / a.f_number[1]
+            else
+                # Linear scan
+                
+                # Apply tilt
+                if any(abs(a.tilt) > 0)
+                    x_dist, y_dist, z_dist = USTB.rotate_points(x_dist, y_dist, z_dist, a.tilt[1], a.tilt[2]) 
+                end
+
+                # Minimum aperture
+                z_dist[z_dist >= 0 & z_dist <  a.minimum_aperture[1]/a.f_number[1]] =  a.minimum_aperture[1]/a.f_number[1]
+                z_dist[z_dist <  0 & z_dist > -a.minimum_aperture[1]/a.f_number[1]] = -a.minimum_aperture[1]/a.f_number[1]
+
+                # Maximum aperture
+                z_dist[z_dist >= 0 & z_dist >  a.maximum_aperture[1]/a.f_number[1]] =  a.maximum_aperture[1]/a.f_number[1]
+                z_dist[z_dist <  0 & z_dist < -a.maximum_aperture[1]/a.f_number[1]] = -a.maximum_aperture[1]/a.f_number[1]
+                
+            end
+            # Compute Tangents & distance
+            tan_theta[:, n] = x_dist ./ z_dist
+            tan_phi[:, n] = y_dist ./ z_dist
+            distance[:, n] = z_dist
+        end
+    end
+    return tan_theta, tan_phi, distance
 end
