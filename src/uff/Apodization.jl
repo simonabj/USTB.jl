@@ -19,7 +19,7 @@ Base.@kwdef mutable struct Apodization
     apodization_vector::Vector{Float64} = []
     origin::Union{Point,Nothing} = nothing
 
-    _data_backup::Nothing = nothing
+    _data_backup::Union{Matrix{Float64},Nothing} = nothing
 
     # Allow struct to be hashable
     last_hash::Base.SHA1 = hash("") 
@@ -43,7 +43,12 @@ end
 
 function Base.getproperty(apo::Apodization, s::Symbol)
     if s == :data
-        compute!(apo)
+        if !check_hash!(apo)
+            println("Missing hash changed. Computing new apodization.")
+            compute!(apo)
+        else
+            println("Same hash. Skipping compute!")
+        end
         return apo._data_backup
     elseif s == :N_elements
         # This is horrible... Why does it change behaviour based on state of a variable!?
@@ -89,7 +94,7 @@ function compute_aperture_apodization!(apo::Apodization)
 
     # No apodization
     if apo.window == Window.None
-        apo._data_backup = ones(apo.focus.N_pixels, apo.probe.N_elements)
+        apo._data_backup = ones(apo.focus.N_pixels, length(apo.probe))
 
     # Sta apodization (just use the element closest to user set origin)
     elseif apo.window == Window.Sta
@@ -100,11 +105,11 @@ function compute_aperture_apodization!(apo::Apodization)
         tan_theta, tan_phi, _ = incidence_aperture(apo)
 
         # Ratios F*tan(angle)
-        ratio_theta = abs(apo.f_number[1] * tan_theta)
-        ratio_phi = abs(apo.f_number[2] * tan_phi)
+        ratio_theta = abs.(apo.f_number[1] * tan_theta)
+        ratio_phi = abs.(apo.f_number[2] * tan_phi)
 
         # Apodization window
-        apo._data_backup = apply_window(apo, ratio_theta, ratio_phi)
+        apo._data_backup = apply_window.(Ref(apo), ratio_theta, ratio_phi)
     end
 
     save_hash!(apo)
@@ -151,14 +156,14 @@ function incidence_aperture(apo::Apodization)
     tan_phi = zeros((apo.focus.N_pixels, 1))
     distance = zeros((apo.focus.N_pixels, 1))
 
-    x = ones((apo.focus,:N_pixels, 1))*transpose(apo.probe.x)
+    x = ones((apo.focus.N_pixels, 1))*transpose(apo.probe.x)
     y = ones((apo.focus.N_pixels, 1))*transpose(apo.probe.y)
     z = ones((apo.focus.N_pixels, 1))*transpose(apo.probe.z)
 
     # if the apodization center has not been set by the user
     if isnothing(apo.origin)
         if isa(apo.probe, UFF.CurvilinearArray)
-            apo.origin = Uff.Point()
+            apo.origin = UFF.Point()
             set!(apo.origin, :xyz, [0 0 -apo.probe.radius])
         elseif isa(apo.focus, UFF.SectorScan)
             apo.origin = apo.focus.apex
@@ -166,7 +171,7 @@ function incidence_aperture(apo::Apodization)
     end
 
     # If we use a curvilinear array
-    if isa(apo.probe, Uff.CurvilinearArray)
+    if isa(apo.probe, UFF.CurvilinearArray)
         element_azimuth = atan(x-apo.origin.x), z - apo.origin.z
 
         pixel_azimuth = atan(apo.focus.x - apo.origin.x, apo.focus.z - apo.origin.z)
@@ -197,18 +202,18 @@ function incidence_aperture(apo::Apodization)
         end
     end
 
-    #Apply tilt
-    if any(abs(apo.tilt) > 0)
-        x_dist, y_dist, z_dist = USTB.rotate_points(x_dist, y_dist, z_dist, apo.tile[1], apo.tilt[2])
-    end
+    # #Apply tilt
+    # if any(abs(apo.tilt) > 0)
+    #     x_dist, y_dist, z_dist = USTB.rotate_points(x_dist, y_dist, z_dist, apo.tile[1], apo.tilt[2])
+    # end
 
     # Minimum aperture
-    z_dist[z_dist >= 0 & z_dist <  apo.minimum_aperture[1] / apo.f_number[1]] =  apo.minimum_aperture[1] / apo.f_number[1]
-    z_dist[z_dist <  0 & z_dist > -apo.minimum_aperture[1] / apo.f_number[1]] = -apo.minimum_aperture[1] / apo.f_number[1]
+    z_dist[(z_dist .>= 0) .& (z_dist .<  apo.minimum_aperture[1] / apo.f_number[1])] .=  apo.minimum_aperture[1] / apo.f_number[1]
+    z_dist[(z_dist .<  0) .& (z_dist .> -apo.minimum_aperture[1] / apo.f_number[1])] .= -apo.minimum_aperture[1] / apo.f_number[1]
 
     # Maximum aperture
-    z_dist[z_dist >= 0 & z_dist <  apo.maximum_aperture[1] / apo.f_number[1]] =  apo.maximum_aperture[1] / apo.f_number[1]
-    z_dist[z_dist <  0 & z_dist > -apo.maximum_aperture[1] / apo.f_number[1]] = -apo.maximum_aperture[1] / apo.f_number[1]
+    z_dist[(z_dist .>= 0) .& (z_dist .<  apo.maximum_aperture[1] / apo.f_number[1])] .=  apo.maximum_aperture[1] / apo.f_number[1]
+    z_dist[(z_dist .<  0) .& (z_dist .> -apo.maximum_aperture[1] / apo.f_number[1])] .= -apo.maximum_aperture[1] / apo.f_number[1]
     
     # Azimuth and elevation tangents, including tilting overwrite
     tan_theta = x_dist ./ z_dist

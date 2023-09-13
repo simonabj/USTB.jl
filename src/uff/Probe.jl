@@ -47,7 +47,7 @@ const _probe_symbol_map = Dict(
 )
 
 "Implement the property interface for the same variables used by MATLAB"
-Base.propertynames(::Probe, private::Bool=false) = union(collect(keys(_probe_symbol_map)), [:r, :xyz], fieldnames(Probe))
+Base.propertynames(::Probe, private::Bool=false) = union(collect(keys(_probe_symbol_map)), [:r, :xyz, :N_elements], fieldnames(Probe))
 
 """
     Base.getproperty(p::Probe, s::Symbol)
@@ -65,6 +65,7 @@ Available symbols and [aliases] for lookup are given by
 :w [:width]           = p.geometry[:, 6]  # element width [m]
 :h [:height]          = p.geometry[:, 7]  # element height [m]
 :r [:distance]        = norm(p.geometry[:,1:3], dims=2) # Distance from elements to origin [m] 
+:N_elements           = Analogous to length(::Probe)
 ```
 """
 function Base.getproperty(p::Probe, s::Symbol)
@@ -74,6 +75,8 @@ function Base.getproperty(p::Probe, s::Symbol)
         mapslices(norm, p.geometry[:, 1:3], dims=2)
     elseif s == :xyz
         p.geometry[:, 1:3]
+    elseif s == :N_elements
+        length(p)
     else
         getfield(p, s)
     end

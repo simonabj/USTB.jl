@@ -59,9 +59,9 @@ end
 
 function Base.setproperty!(sca::Scan, s::Symbol, value)
     if s == :xyz
-        setfield!(sca, :x, convert(fieldtype(Scan, s), value[:, 1]))
-        setfield!(sca, :y, convert(fieldtype(Scan, s), value[:, 2]))
-        setfield!(sca, :z, convert(fieldtype(Scan, s), value[:, 3]))
+        setfield!(sca, :x, convert(fieldtype(Scan, :x), value[:, 1]))
+        setfield!(sca, :y, convert(fieldtype(Scan, :y), value[:, 2]))
+        setfield!(sca, :z, convert(fieldtype(Scan, :z), value[:, 3]))
     else
         setfield!(sca, s, convert(fieldtype(Scan, s), value))
     end
