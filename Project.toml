@@ -17,6 +17,7 @@ UFF = "0d0b83d6-456a-42e3-bf29-fb85441d02cf"
 [compat]
 ContentHashes = "0.1"
 CoordinateTransformations = "0.6"
+DSP = "0.7"
 StaticArrays = "1"
 julia = "1.9"
 
